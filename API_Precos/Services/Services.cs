@@ -44,8 +44,9 @@ namespace APIPrecoComposto2.Services
                                    LISTAPRECO = 'LISTA DE PRECO ML BR'
                         FROM CONNECTPARTS.DBO.PRECIFICACOES
                         WHERE DataEnvioAtualizacao IS NULL 
-                              AND DATACONFIRMACAO >= '2023-06-19'
+                              AND DATACONFIRMACAO >= '2023-06-21'
                               AND PRODUTOLISTAPRECOCODIGO = 2
+                              AND APROVADO = 1
                         ORDER BY DATACONFIRMACAO ASC";
 
                     cmd.Parameters.AddWithValue("@Interface", _interface);
@@ -190,7 +191,7 @@ namespace APIPrecoComposto2.Services
                     cmd.CommandText = $"UPDATE Precificacoes " +
                         $"SET DataEnvioAtualizacao = GETDATE() " +
                         $"WHERE PRODUTOCODIGOEXTERNO IN ({listaSkuFormatada}) AND ProdutoListaPrecoCodigo = 2 " +
-                        $"AND DataConfirmacao >= '2023-06-19' ";
+                        $"AND DataConfirmacao >= '2023-06-21' ";
 
                     await cmd.ExecuteNonQueryAsync();
                 }
