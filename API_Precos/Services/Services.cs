@@ -66,6 +66,10 @@ namespace APIPrecoComposto2.Services
                                 INTERFACE = _interface,
                                 ListaPreco = "LISTA DE PRECO ML BR"
                             };
+                            if (registro.PrecoPromocao == "0")
+                            {
+                                registro.PrecoPromocao = registro.Preco;
+                            }
                             // Trocar vírgula por . para o JSON enviar a SDP
                             registro.Preco = registro.Preco.Replace(",", ".");
                             registro.PrecoPromocao = registro.Preco.Replace(",", ".");
