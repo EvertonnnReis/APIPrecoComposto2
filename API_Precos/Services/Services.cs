@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using APIPrecoComposto2.Controllers;
 using System.Text;
+using Microsoft.Win32;
 
 namespace APIPrecoComposto2.Services
 {
@@ -101,8 +102,14 @@ namespace APIPrecoComposto2.Services
 
                     // Envia os registros para a API da SDP
                     await EnviarApiSDP(caminhoArquivo, listaSku);
+
                 }
             }
+            // Exemplo de chamada assíncrona da função
+            int resultado = await QuantidadeNaoAprovados();
+
+            // Utilize o resultado conforme necessário
+            Console.WriteLine($"Quantidade de não aprovados: {resultado}");
 
             // Retorna os registros como resposta JSON
             return registros;
@@ -213,5 +220,29 @@ namespace APIPrecoComposto2.Services
                 }
             }
         }
+        public async Task<int> QuantidadeNaoAprovados()
+        {
+            using (var conn = new System.Data.SqlClient.SqlConnection(_connectionString))
+            {
+                await conn.OpenAsync();
+
+                using (var cmd = new System.Data.SqlClient.SqlCommand())
+                {
+                    cmd.Connection = conn;
+                    cmd.CommandText = @"
+                    SELECT COUNT(*)
+                    FROM CONNECTPARTS.DBO.PRECIFICACOES
+                    WHERE DataEnvioAtualizacao IS NULL
+                        AND DATACONFIRMACAO >= '2023-06-21'
+                        AND PRODUTOLISTAPRECOCODIGO IN (2,18,21,22,23)
+                        AND APROVADO = 0";
+
+                    int quantidadeNaoAprovados = (int)await cmd.ExecuteScalarAsync();
+
+                    return quantidadeNaoAprovados;
+                }
+            }
+        }
+
     }
 }
